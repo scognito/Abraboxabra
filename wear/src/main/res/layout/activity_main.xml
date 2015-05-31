@@ -1,0 +1,79 @@
+<android.support.wearable.view.BoxInsetLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:padding="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/tvLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ivPushButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="bottom"
+            android:maxLines="30"
+            android:scrollbars="vertical"
+            android:text="LOG WINDOW" />
+
+        <ImageView
+            android:id="@+id/ivStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/presence_busy"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageView
+            android:id="@+id/ivSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_manage"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+        <!--
+        <ImageView
+            android:id="@+id/ivInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/ivStatus" />
+        -->
+
+        <ImageView
+            android:id="@+id/ivPushButton"
+            android:layout_width="wrap_content"
+            android:layout_height="240dp"
+            android:src="@drawable/button"
+            android:layout_above="@+id/ivSettings"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+<!--
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch1"
+            android:checked="false"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+-->
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkBox"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:checked="false" />
+
+    </RelativeLayout>
+</android.support.wearable.view.BoxInsetLayout>
