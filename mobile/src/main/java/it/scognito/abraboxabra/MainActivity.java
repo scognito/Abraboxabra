@@ -191,7 +191,6 @@ public class MainActivity extends Activity {
             }
         });
 
-
         ivStatus.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // (new Thread(new workerThread("lightOff"))).start();
