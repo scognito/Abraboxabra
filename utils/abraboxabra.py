@@ -55,8 +55,8 @@ def clientthread(conn):
 			time.sleep(2)
 			GPIO.output(7,True)
 			client_sock.send("OK")
-		 elif data == 'shutdown':
-                        os.system('shutdown now -h')
+		elif data == 'shutdown':
+			os.system('sudo shutdown now -h')
 	except IOError:
 		print "Disconnected from ", client_info
 		pass
