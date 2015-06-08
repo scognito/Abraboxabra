@@ -3,6 +3,7 @@
 
 import time
 import RPi.GPIO as GPIO
+import os
 from bluetooth import *
 from thread import *
 
@@ -54,6 +55,8 @@ def clientthread(conn):
 			time.sleep(2)
 			GPIO.output(7,True)
 			client_sock.send("OK")
+		 elif data == 'shutdown':
+                        os.system('shutdown now -h')
 	except IOError:
 		print "Disconnected from ", client_info
 		pass
