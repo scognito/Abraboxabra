@@ -52,7 +52,7 @@ def clientthread(conn):
 				first_time = False
 
 			GPIO.output(7, False)
-			time.sleep(2)
+			time.sleep(1.2)
 			GPIO.output(7,True)
 			client_sock.send("OK")
 		elif data == 'shutdown':
