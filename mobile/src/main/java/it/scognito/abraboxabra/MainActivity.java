@@ -73,10 +73,30 @@ public class MainActivity extends Activity {
         getAutoPushOnConnect();
         puppaLog(DEBUG_MSG_INFO, "App start!");
 
+        /*
         if (!btInit())
             return;
 
         startBT();
+        */
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        btStopService();
+        Log.d(TAG, "Stopped");
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (!btInit())
+            return;
+
+        startBT();
+        Log.d(TAG, "Resumed");
     }
 
     private void startBT() {
@@ -307,7 +327,7 @@ public class MainActivity extends Activity {
             dialog.show();
             return;
         } else
-            puppaLog(DEBUG_MSG_INFO, "Found " + pairedDevices.size() + " previously paired devices");
+            puppaLog(DEBUG_MSG_INFO, "(SB)Found " + pairedDevices.size() + " previously paired devices");
 
         final String[] btDevicesNameArray = new String[pairedDevices.size()];
         final String[] btDevicesAddrArray = new String[pairedDevices.size()];

@@ -85,12 +85,31 @@ public class MainActivity extends Activity {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         puppaLog(DEBUG_MSG_INFO, "App start!");
 
+        /*
         if (!btInit())
             return;
 
         startBT();
+        */
     }
 
+    @Override
+    protected void onStop(){
+        super.onStop();
+        btStopService();
+        Log.d(TAG, "Stopped");
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (!btInit())
+            return;
+
+        startBT();
+        Log.d(TAG, "Resumed");
+    }
     private void startBT() {
         if (btServerAddr == null)
             selectBtDevice();
