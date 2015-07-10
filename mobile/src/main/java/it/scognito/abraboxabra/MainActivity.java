@@ -42,8 +42,10 @@ public class MainActivity extends Activity {
     final int STATUS_CONNTECTED = 1;
     final int STATUS_BUSY = 2;
 
+    private int status = STATUS_DISCONNECTED;
+
     final String myUuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee";
-    String btServerAddr = "00:11:22:98:76:54";
+    String btServerAddr = null;
 
     final int DEBUG_MSG_ERROR = 0, DEBUG_MSG_INFO = 1;
 
@@ -86,7 +88,6 @@ public class MainActivity extends Activity {
         super.onStop();
         btStopService();
         Log.d(TAG, "Stopped");
-
     }
 
     @Override
@@ -95,7 +96,9 @@ public class MainActivity extends Activity {
         if (!btInit())
             return;
 
-        startBT();
+        if(status != STATUS_CONNTECTED) {
+            startBT();
+        }
         Log.d(TAG, "Resumed");
     }
 
@@ -256,9 +259,9 @@ public class MainActivity extends Activity {
         autoPush = autostart;
     }
 
-    private void setStatus(int status) {
+    private void setStatus(int pstatus) {
 
-        switch (status) {
+        switch (pstatus) {
             case STATUS_CONNTECTED:
                 ivStatus.setImageResource(android.R.drawable.presence_online);
                 break;
@@ -271,6 +274,7 @@ public class MainActivity extends Activity {
             default:
                 break;
         }
+        status = pstatus;
     }
 
     private void askShutdown() {

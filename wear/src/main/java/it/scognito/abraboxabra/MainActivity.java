@@ -50,8 +50,10 @@ public class MainActivity extends Activity {
     final int STATUS_CONNTECTED = 1;
     final int STATUS_BUSY = 2;
 
+    private int status = STATUS_DISCONNECTED;
+
     final String myUuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee";
-    String btServerAddr = "00:11:22:98:76:54";
+    String btServerAddr = null;
 
     final int DEBUG_MSG_ERROR = 0, DEBUG_MSG_INFO = 1;
 
@@ -97,8 +99,7 @@ public class MainActivity extends Activity {
     protected void onStop(){
         super.onStop();
         btStopService();
-        Log.d(TAG, "Stopped");
-
+        //Log.d(TAG, "Stopped");
     }
 
     @Override
@@ -107,8 +108,9 @@ public class MainActivity extends Activity {
         if (!btInit())
             return;
 
-        startBT();
-        Log.d(TAG, "Resumed");
+        if(status != STATUS_CONNTECTED)
+            startBT();
+        //Log.d(TAG, "Resumed");
     }
     private void startBT() {
         if (btServerAddr == null)
@@ -264,9 +266,9 @@ public class MainActivity extends Activity {
         autoPush = autostart;
     }
 
-    private void setStatus(int status) {
+    private void setStatus(int pstatus) {
 
-        switch (status) {
+        switch (pstatus) {
             case STATUS_CONNTECTED:
                 ivStatus.setImageResource(android.R.drawable.presence_online);
                 break;
@@ -279,6 +281,7 @@ public class MainActivity extends Activity {
             default:
                 break;
         }
+        status = pstatus;
     }
 
     private void selectBtDevice() {
@@ -345,31 +348,31 @@ public class MainActivity extends Activity {
 
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
 
-        Log.d(TAG, "Starting mConnectedThread");
+        //Log.d(TAG, "Starting mConnectedThread");
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket, messageHandler);
         mConnectedThread.start();
     }
 
     public synchronized void btStartService() {
-        Log.d(TAG, "Start bluetooth service");
+        //Log.d(TAG, "Start bluetooth service");
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {
 
-            Log.d(TAG, "Thread mConnectThread exists, canceling it");
+            //Log.d(TAG, "Thread mConnectThread exists, canceling it");
             mConnectThread.cancel();
             mConnectThread = null;
         }
 
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {
-            Log.d(TAG, "Thread mConnectEDThread exists, canceling it");
+            //Log.d(TAG, "Thread mConnectEDThread exists, canceling it");
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
 
-        Log.d(TAG, "Creating ConnectThread...");
+        //Log.d(TAG, "Creating ConnectThread...");
         setStatus(STATUS_BUSY);
         mConnectThread = new ConnectThread(btDevice, messageHandler);
         mConnectThread.start();
@@ -392,6 +395,8 @@ public class MainActivity extends Activity {
     }
 
     public void puppaLog(int type, String puppa) {
+
+        if(1>0) return;
 
         if (type == DEBUG_MSG_ERROR)
             Log.e(TAG, puppa);
@@ -418,9 +423,9 @@ public class MainActivity extends Activity {
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(myUuid));
-                Log.d(TAG, "ConnectThread Constructor created :)");
+                //Log.d(TAG, "ConnectThread Constructor created :)");
             } catch (IOException e) {
-                Log.e(TAG, "Error creating socket! " + e.toString());
+                //Log.e(TAG, "Error creating socket! " + e.toString());
             }
             mmSocket = tmp;
         }
@@ -434,19 +439,19 @@ public class MainActivity extends Activity {
                 // Connect the device through the socket. This will block
                 // until it succeeds or throws an exception
                 mmSocket.connect();
-                Log.d(TAG, "RFCOMM channel created :)");
+                //Log.d(TAG, "RFCOMM channel created :)");
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
                 // setStatus(STATUS_DISCONNECTED);
                 parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
                 try {
                     mmSocket.close();
-                    Log.e(TAG, "IOError connecting(1) socket!");
+                    //Log.e(TAG, "IOError connecting(1) socket!");
                 } catch (IOException closeException) {
-                    Log.e(TAG, "IOError closing(1) socket!");
+                    //Log.e(TAG, "IOError closing(1) socket!");
                 }
 
-                Log.e(TAG, "IOError connecting to socket!");
+                //Log.e(TAG, "IOError connecting to socket!");
                 return;
             }
 
@@ -457,10 +462,10 @@ public class MainActivity extends Activity {
         public void cancel() {
             parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
             try {
-                Log.d(TAG, "ConnectThread.cancel...");
+                //Log.d(TAG, "ConnectThread.cancel...");
                 mmSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "IOError on ConnectThread.cancel! " + e.toString());
+                //Log.e(TAG, "IOError on ConnectThread.cancel! " + e.toString());
             }
         }
     }
@@ -503,7 +508,7 @@ public class MainActivity extends Activity {
                 write("openclose".getBytes());
 
             // Keep listening to the InputStream until an exception occurs
-            Log.d(TAG, "THE FUN BEGINS!");
+            //Log.d(TAG, "THE FUN BEGINS!");
             while (true) {
 
                 try { // Read from the InputStream bytes =
@@ -511,11 +516,11 @@ public class MainActivity extends Activity {
 
                     // Send the obtained bytes to the UI activity //
                     String readMessage = new String(buffer, 0, bytes);
-                    Log.d(TAG, "Received message: " + readMessage);
+                    //Log.d(TAG, "Received message: " + readMessage);
 
                 } catch (IOException e) {
                     parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
-                    Log.e(TAG, "IOException: " + e.toString());
+                    //Log.e(TAG, "IOException: " + e.toString());
                     break;
                 }
             }
@@ -527,7 +532,7 @@ public class MainActivity extends Activity {
                 mmOutStream.write(bytes);
             } catch (IOException e) {
                 parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
-                Log.e(TAG, "Write error: " + e.toString());
+                //Log.e(TAG, "Write error: " + e.toString());
             }
         }
 
@@ -535,10 +540,10 @@ public class MainActivity extends Activity {
         public void cancel() {
             parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
             try {
-                Log.d(TAG, "ConnectedThread.cancel...");
+                //Log.d(TAG, "ConnectedThread.cancel...");
                 mmSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "ConnectedThread.cancel exception " + e.toString());
+                //Log.e(TAG, "ConnectedThread.cancel exception " + e.toString());
             }
         }
     }
