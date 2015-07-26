@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
     private final String TAG = "ABRABOXABRA";
 
-    ImageView ivPushButton, ivSettings, ivStatus, ivInfo, ivShutdown;
+    ImageView ivPushButton, ivSettings, ivStatus, ivInfo, ivShutdown, ivPairing, ivRemoveDevice;
     TextView tvLog;
     Switch autoPushOnConnect;
 
@@ -164,6 +164,8 @@ public class MainActivity extends Activity {
         ivSettings = (ImageView) findViewById(R.id.ivSettings);
         ivInfo = (ImageView) findViewById(R.id.ivInfo);
         ivShutdown = (ImageView) findViewById(R.id.ivShutdown);
+        ivPairing = (ImageView) findViewById(R.id.ivEnablePairing);
+        ivRemoveDevice = (ImageView) findViewById(R.id.ivRemoveDevice);
 
         tvLog = (TextView) findViewById(R.id.tvLog);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
@@ -193,6 +195,15 @@ public class MainActivity extends Activity {
             }
         });
 
+        ivRemoveDevice.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (mConnectedThread != null) {
+                    mConnectedThread.write("device_list".getBytes());
+                    puppaLog(DEBUG_MSG_INFO, "Sending command");
+                }
+            }
+        });
+
         ivSettings.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 selectBtDevice();
@@ -213,6 +224,14 @@ public class MainActivity extends Activity {
                 askShutdown();
             }
         });
+
+        ivPairing.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                enablePairing();
+            }
+        });
+
+
 
         ivStatus.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -306,6 +325,14 @@ public class MainActivity extends Activity {
 
         dialog = builder.create();
         dialog.show();
+    }
+
+    private void enablePairing() {
+        if (mConnectedThread != null) {
+            mConnectedThread.write("enable_pairing".getBytes());
+            puppaLog(DEBUG_MSG_INFO, "Sending command enable_pairing");
+            Toast.makeText(this, R.string.enable_pairing, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void selectBtDevice() {

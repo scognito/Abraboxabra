@@ -52,7 +52,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_delete"
-        android:layout_alignStart="@+id/ivPushButton" />
+        android:layout_alignStart="@+id/ivPushButton"
+        android:layout_alignLeft="@+id/ivPushButton"
+        />
+
+    <ImageView
+        android:id="@+id/ivEnablePairing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_alignTop="@+id/tvLog"
+        android:layout_toLeftOf="@+id/switch1"
+        android:layout_toStartOf="@+id/switch1" />
+
+    <ImageView
+        android:id="@+id/ivRemoveDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_delete"
+        android:layout_alignTop="@+id/tvLog"
+        android:layout_toRightOf="@+id/switch1"
+        android:layout_toEndOf="@+id/switch1" />
 
     <ImageView
         android:id="@+id/ivPushButton"

@@ -10,4 +10,5 @@
     <string name="no_paired_devices_found">No paired device found, please pair</string>
     <string name="device_no_bt">Bluetooth not available on device</string>
     <string name="ask_shutdown">Do you really want to shutdown Abraboxabra?</string>
+    <string name="enable_pairing">Sending pairing command</string>
 </resources>
