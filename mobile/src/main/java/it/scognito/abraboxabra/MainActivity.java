@@ -14,9 +14,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -33,9 +35,12 @@ public class MainActivity extends Activity {
 
     private final String TAG = "ABRABOXABRA";
 
-    ImageView ivPushButton, ivSettings, ivStatus, ivInfo, ivShutdown, ivPairing, ivRemoveDevice;
+    ImageView ivPushButton, ivStatus, ivInfo; // ivSettings, , ivShutdown, ivPairing, ivRemoveDevice;
     TextView tvLog;
     Switch autoPushOnConnect;
+
+    final int HANDLE_STATUS = 0;
+    final int HANDLE_RET_MSG = 1;
 
     final int REQUEST_ENABLE_BT = 0;
     final int STATUS_DISCONNECTED = 0;
@@ -58,15 +63,24 @@ public class MainActivity extends Activity {
 
     private Handler messageHandler = new Handler() {
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            setStatus(msg.what);
+            switch (msg.what){
+                case HANDLE_STATUS:
+                    //super.handleMessage(msg);
+                    //Log.d(TAG, "******* arg1: " + msg.arg1 + " arg2: " + msg.arg2  + " object: " + msg.obj.toString());
+                    setStatus(Integer.parseInt(msg.obj.toString()));
+                    break;
+                case HANDLE_RET_MSG:
+                    showServerDevices(msg.obj.toString());
+                    puppaLog(DEBUG_MSG_INFO, "HANDLE_RET_MSG: " +  msg.obj.toString());
+                    break;
+            }
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_main);
 
@@ -161,11 +175,13 @@ public class MainActivity extends Activity {
 
         ivPushButton = (ImageView) findViewById(R.id.ivPushButton);
         ivStatus = (ImageView) findViewById(R.id.ivStatus);
-        ivSettings = (ImageView) findViewById(R.id.ivSettings);
         ivInfo = (ImageView) findViewById(R.id.ivInfo);
+        /*
+        ivSettings = (ImageView) findViewById(R.id.ivSettings);
         ivShutdown = (ImageView) findViewById(R.id.ivShutdown);
         ivPairing = (ImageView) findViewById(R.id.ivEnablePairing);
         ivRemoveDevice = (ImageView) findViewById(R.id.ivRemoveDevice);
+        */
 
         tvLog = (TextView) findViewById(R.id.tvLog);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
@@ -195,27 +211,13 @@ public class MainActivity extends Activity {
             }
         });
 
+        /*
         ivRemoveDevice.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (mConnectedThread != null) {
                     mConnectedThread.write("device_list".getBytes());
                     puppaLog(DEBUG_MSG_INFO, "Sending command");
                 }
-            }
-        });
-
-        ivSettings.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                selectBtDevice();
-            }
-        });
-
-        ivInfo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (tvLog.getVisibility() == View.VISIBLE)
-                    tvLog.setVisibility(View.INVISIBLE);
-                else
-                    tvLog.setVisibility(View.VISIBLE);
             }
         });
 
@@ -231,7 +233,21 @@ public class MainActivity extends Activity {
             }
         });
 
+        ivSettings.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                selectBtDevice();
+            }
+        });
+        */
 
+        ivInfo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (tvLog.getVisibility() == View.VISIBLE)
+                    tvLog.setVisibility(View.INVISIBLE);
+                else
+                    tvLog.setVisibility(View.VISIBLE);
+            }
+        });
 
         ivStatus.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -335,6 +351,52 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void showServerDevices(String allDevices){
+        if(allDevices.equalsIgnoreCase("none")){
+            Toast.makeText(this, R.string.no_devices_on_server, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AlertDialog dialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String[] devices = allDevices.split("<-->");
+        final String[] btDevicesNameArray = new String[devices.length];
+        final String[] btDevicesAddrArray = new String[devices.length];
+
+        int i = 0;
+        for (String dev : devices) {
+            btDevicesAddrArray[i] = (dev.substring(0, 17));
+            btDevicesNameArray[i] = (dev.substring(18, dev.length()));
+            Log.d(TAG, "->"+btDevicesNameArray[i]+"<-->"+btDevicesAddrArray[i]+"<-");
+            i++;
+        }
+
+        builder.setTitle(getResources().getString(R.string.select_device_remove));
+        builder.setSingleChoiceItems(btDevicesNameArray, 0, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                puppaLog(DEBUG_MSG_INFO, "Selected: " + btDevicesNameArray[item] + "(" + btDevicesAddrArray[item] + ")");
+                if (mConnectedThread != null) {
+                    mConnectedThread.write(("remove_device " + btDevicesAddrArray[item]).getBytes());
+                    puppaLog(DEBUG_MSG_INFO, "Sending command: "+ "remove_device " + btDevicesAddrArray[item]);
+                }
+               // setBtServer(btDevicesAddrArray[item]);
+               // setAbraboxabraAddress(btDevicesAddrArray[item]);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog = builder.create();
+        dialog.show();
+
+    }
+
     private void selectBtDevice() {
 
         AlertDialog dialog;
@@ -370,7 +432,7 @@ public class MainActivity extends Activity {
             i++;
         }
 
-        builder.setTitle(getResources().getString(R.string.select_device));
+        builder.setTitle(getResources().getString(R.string.select_server));
         builder.setSingleChoiceItems(btDevicesNameArray, 0, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 puppaLog(DEBUG_MSG_INFO, "Selected:" + btDevicesNameArray[item] + "(" + btDevicesAddrArray[item] + ")");
@@ -456,7 +518,39 @@ public class MainActivity extends Activity {
             tvLog.append("\n" + puppa);
     }
 
-    /* ALTRE CLASSI */
+    /* MENU STUFF */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_select_server:
+                selectBtDevice();
+                return true;
+            case R.id.action_enable_pairing:
+                enablePairing();
+                return true;
+            case R.id.action_remove_device:
+                if (mConnectedThread != null) {
+                    mConnectedThread.write("device_list".getBytes());
+                    puppaLog(DEBUG_MSG_INFO, "Sending command");
+                }
+                return true;
+            case R.id.action_shutdown:
+                askShutdown();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /* OTHER CLASSES */
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         //private final BluetoothDevice mmDevice;
@@ -484,7 +578,19 @@ public class MainActivity extends Activity {
             mBluetoothAdapter.cancelDiscovery();
 
             try {
-                parentHandler.sendEmptyMessage(STATUS_BUSY);
+                parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_BUSY));
+                //parentHandler.sendEmptyMessage(STATUS_BUSY);
+
+                /*
+                msgObj = parentHandler.obtainMessage();
+                Bundle b = new Bundle();
+                b.putString("message", msg);
+                msgObj.setData(b);
+                handler.sendMessage(msgObj);
+                */
+
+
+
                 // Connect the device through the socket. This will block
                 // until it succeeds or throws an exception
                 mmSocket.connect();
@@ -492,7 +598,8 @@ public class MainActivity extends Activity {
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
                 // setStatus(STATUS_DISCONNECTED);
-                parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+                parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_DISCONNECTED));
+                //parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
                 try {
                     mmSocket.close();
                     Log.e(TAG, "IOError opening socket!");
@@ -509,7 +616,8 @@ public class MainActivity extends Activity {
         }
 
         public void cancel() {
-            parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+            //parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+            parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_DISCONNECTED));
             try {
                 Log.d(TAG, "ConnectThread.cancel...");
                 mmSocket.close();
@@ -540,9 +648,12 @@ public class MainActivity extends Activity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-                parentHandler.sendEmptyMessage(STATUS_CONNTECTED);
+                parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_CONNTECTED));
+                //parentHandler.sendEmptyMessage(STATUS_CONNTECTED);
+
             } catch (IOException e) {
-                parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+                parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_DISCONNECTED));
+                //parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
             }
 
             mmInStream = tmpIn;
@@ -565,10 +676,12 @@ public class MainActivity extends Activity {
 
                     // Send the obtained bytes to the UI activity //
                     String readMessage = new String(buffer, 0, bytes);
-                    Log.d(TAG, "Received message: " + readMessage);
+                    parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_RET_MSG, 0, 0, readMessage));
+                    //Log.d(TAG, "Received message: " + readMessage);
 
                 } catch (IOException e) {
-                    parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+                    parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_DISCONNECTED));
+                    //parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
                     Log.e(TAG, "IOException: " + e.toString());
                     break;
                 }
@@ -580,14 +693,16 @@ public class MainActivity extends Activity {
             try {
                 mmOutStream.write(bytes);
             } catch (IOException e) {
-                parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+                parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_DISCONNECTED));
+                //parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
                 Log.e(TAG, "Write error: " + e.toString());
             }
         }
 
         /* Call this from the main activity to shutdown the connection */
         public void cancel() {
-            parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
+            parentHandler.sendMessage(parentHandler.obtainMessage(HANDLE_STATUS, STATUS_DISCONNECTED));
+            //parentHandler.sendEmptyMessage(STATUS_DISCONNECTED);
             try {
                 Log.d(TAG, "ConnectedThread.cancel...");
                 mmSocket.close();

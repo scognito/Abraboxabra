@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">Abraboxabra</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="select_device">Select device</string>
+    <string name="select_server">Select server</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="warning">Warning!</string>
@@ -11,4 +9,9 @@
     <string name="device_no_bt">Bluetooth not available on device</string>
     <string name="ask_shutdown">Do you really want to shutdown Abraboxabra?</string>
     <string name="enable_pairing">Sending pairing command</string>
+    <string name="no_devices_on_server">No devices associated to Abraboxabra server</string>
+    <string name="select_device_remove">Select remote to remove</string>
+    <string name="add_remote">Add remote</string>
+    <string name="delete_device">Remove remote</string>
+    <string name="shutdown">Shutdown</string>
 </resources>

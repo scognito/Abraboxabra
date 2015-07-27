@@ -1,6 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_select_server" android:title="@string/select_server"
+        android:orderInCategory="10" app:showAsAction="always" />
+    <item android:id="@+id/action_enable_pairing" android:title="@string/enable_pairing"
+        android:orderInCategory="20" app:showAsAction="always" />
+    <item android:id="@+id/action_remove_device" android:title="@string/delete_device"
+        android:orderInCategory="30" app:showAsAction="always" />
+    <item android:id="@+id/action_shutdown" android:title="@string/shutdown"
+        android:orderInCategory="90" app:showAsAction="always" />
 </menu>
+
