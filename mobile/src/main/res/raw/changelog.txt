@@ -21,12 +21,13 @@
   <body>
     $ 2.0
       % Version 2.0
-      _ 2015-07-10
+      _ 2015-08-07
       * Abilty to add and remove remotes within the app! (Requires Abraboxabra version 2)
       * Reorganized UI
     $ 1.0
       % Version 1.0
-      _ Initial release
+      _ 2015-07-10
+      * Initial release
 	  * <a href="http://wp.me/p6raR-7m">Setup instructions</a>
     $ END_OF_CHANGE_LOG
   </body>
