@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_select_server" android:title="@string/select_server"
         android:orderInCategory="10" app:showAsAction="always" />
-    <item android:id="@+id/action_enable_pairing" android:title="@string/enable_pairing"
+    <item android:id="@+id/action_enable_pairing" android:title="@string/add_remote"
         android:orderInCategory="20" app:showAsAction="always" />
     <item android:id="@+id/action_remove_device" android:title="@string/delete_device"
         android:orderInCategory="30" app:showAsAction="always" />
     <item android:id="@+id/action_shutdown" android:title="@string/shutdown"
         android:orderInCategory="90" app:showAsAction="always" />
 </menu>
-

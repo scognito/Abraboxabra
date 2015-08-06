@@ -86,6 +86,11 @@ public class MainActivity extends Activity {
 
         getAbraboxabraAddress();
         setupViews();
+
+        ChangeLog cl = new ChangeLog(this);
+        if (cl.firstRun())
+            cl.getLogDialog().show();
+
         getAutoPushOnConnect();
         puppaLog(DEBUG_MSG_INFO, "App start!");
 
@@ -347,7 +352,7 @@ public class MainActivity extends Activity {
         if (mConnectedThread != null) {
             mConnectedThread.write("enable_pairing".getBytes());
             puppaLog(DEBUG_MSG_INFO, "Sending command enable_pairing");
-            Toast.makeText(this, R.string.enable_pairing, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.send_pairing, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -427,12 +432,14 @@ public class MainActivity extends Activity {
 
         int i = 0;
         for (BluetoothDevice device : pairedDevices) {
-            btDevicesNameArray[i] = device.getName();
+            btDevicesNameArray[i] = device.getName() == null ? " " : device.getName();
             btDevicesAddrArray[i] = device.getAddress();
+            Log.d(TAG, "name: " + device.getName() + " address: " + device.getAddress() );
             i++;
         }
 
         builder.setTitle(getResources().getString(R.string.select_server));
+
         builder.setSingleChoiceItems(btDevicesNameArray, 0, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 puppaLog(DEBUG_MSG_INFO, "Selected:" + btDevicesNameArray[item] + "(" + btDevicesAddrArray[item] + ")");

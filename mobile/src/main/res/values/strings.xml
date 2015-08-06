@@ -8,10 +8,14 @@
     <string name="no_paired_devices_found">No paired device found, please pair</string>
     <string name="device_no_bt">Bluetooth not available on device</string>
     <string name="ask_shutdown">Do you really want to shutdown Abraboxabra?</string>
-    <string name="enable_pairing">Sending pairing command</string>
+    <string name="send_pairing">Sending pairing command</string>
     <string name="no_devices_on_server">No devices associated to Abraboxabra server</string>
     <string name="select_device_remove">Select remote to remove</string>
     <string name="add_remote">Add remote</string>
     <string name="delete_device">Remove remote</string>
     <string name="shutdown">Shutdown</string>
+    <string name="changelog_full_title">Changelog</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more...</string>
 </resources>
