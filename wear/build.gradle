@@ -9,8 +9,8 @@ android {
         applicationId "it.scognito.abraboxabra"
         minSdkVersion 20
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.02"
+        versionCode 3
+        versionName "2.0"
     }
     buildTypes {
         release {
